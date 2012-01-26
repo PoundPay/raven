@@ -108,9 +108,10 @@ class Message(BaseEvent):
         message = msg['message']
         params = msg.get('params', None)
         if params:
-            return message % tuple(params)
-        self.logger.warn('Unable to find params for message',
-                         extra={'msg': msg})
+            try:
+                return message % tuple(params)
+            except TypeError as ex:
+                print >> sys.stderr, ex.message, message, params
         return message
 
     def get_hash(self, data):

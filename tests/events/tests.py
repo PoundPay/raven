@@ -11,7 +11,7 @@ class MessageTest(TestCase):
         unformatted_message = 'My message from %s about %s'
         client = Mock()
         message = Message(client)
-        message.logger = Mock()
+
         data = {
             'sentry.interfaces.Message': {
                 'message': unformatted_message,
@@ -19,13 +19,8 @@ class MessageTest(TestCase):
         }
 
         self.assertEqual(message.to_string(data), unformatted_message)
-        self.assertEqual(message.logger.warn.call_count, 1)
-
-        args, kwargs = message.logger.warn.call_args
-        self.assertEqual(args, ('Unable to find params for message',))
-        self.assertEqual(kwargs,
-                         {'extra': {'msg': {'message': unformatted_message}}})
-
+        data['sentry.interfaces.Message']['params'] = (1, 2, 3)
+        self.assertEqual(message.to_string(data), unformatted_message)
         data['sentry.interfaces.Message']['params'] = (1, 2)
         self.assertEqual(message.to_string(data),
                          unformatted_message % (1, 2))
