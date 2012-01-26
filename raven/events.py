@@ -110,7 +110,7 @@ class Message(BaseEvent):
         if params:
             return message % tuple(params)
         self.logger.warn('Unable to find params for message',
-                         extra={'msg': msg})
+                         extra=data)
         return message
 
     def get_hash(self, data):
